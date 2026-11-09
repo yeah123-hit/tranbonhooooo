@@ -8568,18 +8568,18 @@ var MPX = (function () {
     img.__tm = setTimeout(function () { if (f && !f.classList.contains('is-ok') && !f.classList.contains('is-err')) W.mpxImgErr(img); }, 9000);
     img.src = list[n];
   }
-  W.mpxImgOk = function (img) {
+  window.mpxImgOk = W.mpxImgOk = function (img) {
     clearTimeout(img.__tm);
     var f = figOf(img); if (!f) return;
     f.classList.remove('is-err'); f.classList.add('is-ok');
   };
-  W.mpxImgErr = function (img) {
+  window.mpxImgErr = W.mpxImgErr = function (img) {
     clearTimeout(img.__tm);
     var f = figOf(img), n = parseInt(img.getAttribute('data-try') || '0', 10) + 1;
     if (n < 3) { setSrc(img, n); return; }
     if (f) { f.classList.remove('is-ok'); f.classList.add('is-err'); }
   };
-  W.mpxImgRetry = function (btn) {
+  window.mpxImgRetry = W.mpxImgRetry = function (btn) {
     var f = btn.closest('.xq-fig'), img = f && f.querySelector('img'); if (!img) return;
     f.classList.remove('is-err', 'is-ok'); setSrc(img, 0);
   };
@@ -8778,30 +8778,13 @@ html body #explanation-box{max-width:none}
 .xq-wr p>span:only-child{grid-column:1/-1}
 </style>
 <style id="perf-v1">
-/* Hiệu năng: không dùng backdrop-filter / blur lớn / animation nền chạy liên tục */
-html body *,html body *::before,html body *::after{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+/* Hiệu năng tối ưu thông minh: giữ hiệu ứng kính mờ (glassmorphism) ở các thanh điều hướng & hộp thoại chính, tắt ở các phần tử lặp lại nhiều */
+html body :is(#options-container *,#matrix-grid-container *,#lab-list-container *,#clinical-story *){-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
 html body::before{animation:none!important;will-change:auto!important}
-html body header.glass-header::after{animation:none!important}
-#mc-gate::before,#mc-gate::after{display:none!important}
-html body #v10-hero .vh-ecg path{animation:none!important;stroke-dashoffset:0!important}
-html body .ecg-strip{animation:none!important}
 html body :is(.fmt-card,.cm-head){contain:layout paint}
 html body #options-container,html body #matrix-drawer{contain:layout style}
 </style>
-<style id="exam-topbar-v23">
-/* v23 — bỏ hiệu ứng sáng của thanh phòng thi; giữ nền xanh và bố cục */
-html body #sec-exam-room #exam-top-bar[data-xt="1"]{box-shadow:inset 0 1px 0 rgba(255,255,255,.18)!important}
-html body #sec-exam-room #exam-top-bar[data-xt="1"]::before,html body #sec-exam-room #exam-top-bar[data-xt="1"]::after{display:none!important}
-html body #sec-exam-room #exam-top-bar[data-xt="1"],html body #sec-exam-room #exam-top-bar[data-xt="1"] *{text-shadow:none!important}
-html body #sec-exam-room #exam-top-bar[data-xt="1"] .xt-dial,html body #sec-exam-room #exam-top-bar[data-xt="1"] .xt-clock[data-st="warn"] .xt-dial,html body #sec-exam-room #exam-top-bar[data-xt="1"] .xt-clock[data-st="crit"] .xt-dial{filter:none!important}
-html body #sec-exam-room #exam-top-bar[data-xt="1"] .xt-prog>i{box-shadow:none!important}
-html body #sec-exam-room #exam-top-bar[data-xt="1"] #bloom-badge::before{box-shadow:none!important}
-html body #sec-exam-room #exam-top-bar[data-xt="1"] .xt-go,html body #sec-exam-room #exam-top-bar[data-xt="1"] .xt-go:hover{box-shadow:0 0 0 1px rgba(255,255,255,.5) inset!important}
-html body #sec-exam-room #exam-top-bar[data-xt="1"] .xt-go::after{display:none!important}
-html body #sec-exam-room #exam-top-bar[data-xt="1"] .xt-btn:hover{box-shadow:none!important;transform:none!important}
-html body #sec-exam-room #exam-top-bar[data-xt="1"] #btn-flag.bg-amber-500,html body #sec-exam-room #exam-top-bar[data-xt="1"] #v10-pausebtn.is-paused{box-shadow:none!important}
-html body #sec-exam-room #exam-top-bar[data-xt="1"] .xt-pbar>i,html body #sec-exam-room #exam-top-bar[data-xt="1"] .xt-pace[data-st="mid"] .xt-pbar>i,html body #sec-exam-room #exam-top-bar[data-xt="1"] .xt-pace[data-st="late"] .xt-pbar>i{box-shadow:none!important}
-</style>
+<style id="exam-topbar-v23"></style>
 <style id="exam-topbar-v24">
 /* v24 — mặt đồng hồ bấm giờ + nút Nộp bài vẽ lại */
 html body #sec-exam-room #exam-top-bar[data-xt="1"] .xt-dial{width:58px;height:58px}
@@ -8836,5 +8819,1261 @@ html body #clinical-story strong,html body #clinical-story b,html body #clinical
 html.mp-dark body #clinical-story{color:#E4ECF7}
 html.mp-dark body #question-stem{color:#F1F6FD}
 </style>
+
+<!-- =====================================================================
+     SECRET ULTRA DESIGN SYSTEM v25 — NÂNG CẤP GIAO DIỆN TOÀN DIỆN MỌI TÍNH NĂNG
+     ===================================================================== -->
+<style id="secret-ultra-ui-v25">
+:root {
+  --u-bg-light: #F3F7FD;
+  --u-surface-light: #FFFFFF;
+  --u-surface-2-light: #F8FAFC;
+  --u-border-light: #DCE6F4;
+  --u-border-strong-light: #C3D4EC;
+  --u-ink-1: #0B192C;
+  --u-ink-2: #2C3E58;
+  --u-ink-3: #5A6E8C;
+  --u-brand-primary: #1D5BD6;
+  --u-brand-secondary: #0D9488;
+  --u-brand-accent: #F59E0B;
+  --u-grad-royal: linear-gradient(135deg, #1644A8 0%, #1E62D0 52%, #0D8A9E 100%);
+  --u-grad-sidebar: linear-gradient(185deg, #102B5C 0%, #153E82 54%, #0E587A 100%);
+  --u-grad-emerald: linear-gradient(135deg, #059669 0%, #10B981 100%);
+  --u-grad-amber: linear-gradient(135deg, #FFF0B8 0%, #FFD147 50%, #F59E0B 100%);
+  --u-shadow-card: 0 1px 2px rgba(15, 35, 70, 0.04), 0 10px 28px -10px rgba(20, 55, 115, 0.09);
+  --u-shadow-card-hover: 0 4px 12px rgba(15, 35, 70, 0.07), 0 20px 38px -12px rgba(22, 68, 168, 0.16);
+  --u-shadow-float: 0 24px 60px -18px rgba(10, 28, 64, 0.32), 0 0 0 1px rgba(255, 255, 255, 0.12) inset;
+  --u-ease: cubic-bezier(0.22, 0.8, 0.3, 1);
+}
+
+html.mp-dark {
+  --u-bg-light: #081221;
+  --u-surface-light: #101F36;
+  --u-surface-2-light: #152844;
+  --u-border-light: #223859;
+  --u-border-strong-light: #2F4D7A;
+  --u-ink-1: #F2F7FF;
+  --u-ink-2: #C8D7EC;
+  --u-ink-3: #8FA5C4;
+  --u-grad-royal: linear-gradient(135deg, #153B8F 0%, #1B54B8 52%, #0E7489 100%);
+  --u-grad-sidebar: linear-gradient(185deg, #0B1B3B 0%, #102A58 55%, #0C3F5B 100%);
+  --u-shadow-card: 0 1px 0 rgba(255, 255, 255, 0.05) inset, 0 14px 34px -14px rgba(0, 0, 0, 0.65);
+  --u-shadow-card-hover: 0 1px 0 rgba(255, 255, 255, 0.1) inset, 0 20px 42px -12px rgba(0, 0, 0, 0.8);
+}
+
+/* ---------- 1. NỀN TỔNG THỂ & KHUNG CHÍNH ---------- */
+html:not(.mp-dark) body {
+  background-color: var(--u-bg-light) !important;
+  background-image:
+    radial-gradient(1000px 540px at 8% -10%, rgba(29, 91, 214, 0.10), transparent 64%),
+    radial-gradient(900px 500px at 96% 4%, rgba(13, 148, 136, 0.08), transparent 62%),
+    radial-gradient(rgba(29, 91, 214, 0.055) 1px, transparent 1.2px) !important;
+  background-size: auto, auto, 24px 24px !important;
+  color: var(--u-ink-1);
+}
+
+html.mp-dark body {
+  background-color: var(--u-bg-light) !important;
+  background-image:
+    radial-gradient(1000px 540px at 8% -10%, rgba(56, 139, 253, 0.16), transparent 64%),
+    radial-gradient(900px 500px at 96% 4%, rgba(20, 184, 166, 0.11), transparent 62%),
+    radial-gradient(rgba(148, 184, 240, 0.045) 1px, transparent 1.2px) !important;
+  background-size: auto, auto, 24px 24px !important;
+  color: var(--u-ink-1);
+}
+
+/* ---------- 2. MÀN HÌNH CHỜ (#mp-boot) & CỔNG ĐĂNG NHẬP (#mc-gate) ---------- */
+#mp-boot {
+  background:
+    radial-gradient(950px 540px at 14% 10%, rgba(52, 214, 166, 0.26), transparent 60%),
+    radial-gradient(850px 520px at 90% 90%, rgba(96, 165, 250, 0.28), transparent 60%),
+    linear-gradient(135deg, #0D254C 0%, #153E80 54%, #0E5E76 100%) !important;
+}
+#mp-boot .mpb-card {
+  padding: 36px 44px !important;
+  border-radius: 28px !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  box-shadow: 0 32px 72px -20px rgba(4, 15, 38, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(1.3) !important;
+  backdrop-filter: blur(18px) saturate(1.3) !important;
+}
+#mp-boot .mpb-logo {
+  width: 72px !important;
+  height: 72px !important;
+  border-radius: 22px !important;
+  background: linear-gradient(145deg, #3B82F6, #0D9488) !important;
+  box-shadow: 0 20px 44px -12px rgba(20, 184, 166, 0.65), inset 0 1.5px 0 rgba(255, 255, 255, 0.45) !important;
+}
+
+html body #mc-gate {
+  background-color: #0D254C !important;
+  background-image:
+    radial-gradient(1000px 600px at 10% 10%, rgba(20, 184, 166, 0.28), transparent 60%),
+    radial-gradient(900px 600px at 92% 90%, rgba(59, 130, 246, 0.30), transparent 60%),
+    linear-gradient(135deg, #0C2248 0%, #163F82 52%, #0E5870 100%) !important;
+}
+html body #v10-hero li {
+  background: rgba(255, 255, 255, 0.09) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  border-radius: 18px !important;
+  padding: 14px 16px !important;
+  box-shadow: 0 12px 28px -16px rgba(4, 15, 38, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
+  transition: transform 0.25s var(--u-ease), background 0.25s, border-color 0.25s !important;
+}
+html body #v10-hero li:hover {
+  transform: translateY(-2px) translateX(3px);
+  background: rgba(255, 255, 255, 0.14) !important;
+  border-color: rgba(255, 255, 255, 0.32) !important;
+}
+html body #v10-hero .vh-stats {
+  padding: 16px 22px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  display: inline-flex !important;
+  gap: 16px 36px !important;
+}
+html body #v10-hero .vh-ecg path {
+  animation: v10Ecg 4s linear infinite !important;
+}
+html body #mc-gate .max-w-md > .bg-white {
+  border-radius: 30px !important;
+  padding: 38px 32px 32px !important;
+  box-shadow: 0 44px 96px -28px rgba(4, 14, 38, 0.78), 0 0 0 1px rgba(255, 255, 255, 0.75) inset !important;
+}
+html body #mc-gate #mc-g-google {
+  border-radius: 16px !important;
+  font-weight: 800 !important;
+  padding: 15px 20px !important;
+  background: linear-gradient(180deg, #FFFFFF 0%, #F4F8FD 100%) !important;
+  border: 1.5px solid #C8D8EE !important;
+  color: #0F2342 !important;
+  box-shadow: 0 10px 24px -12px rgba(15, 45, 95, 0.3), inset 0 1px 0 #FFF !important;
+  transition: transform 0.2s var(--u-ease), box-shadow 0.2s, border-color 0.2s !important;
+}
+html body #mc-gate #mc-g-google:hover {
+  transform: translateY(-2px);
+  border-color: #2F7DE1 !important;
+  box-shadow: 0 16px 32px -12px rgba(47, 125, 225, 0.4), inset 0 1px 0 #FFF !important;
+}
+html.mp-dark body #mc-gate #mc-g-google {
+  background: linear-gradient(180deg, #1B3154 0%, #142644 100%) !important;
+  border-color: #325080 !important;
+  color: #F1F6FF !important;
+}
+
+/* ---------- 3. THANH BÊN (SIDEBAR) & THANH ĐIỀU HƯỚNG DI ĐỘNG ---------- */
+html body aside.w-64.bg-slate-950:not(#mc-gate) {
+  background:
+    radial-gradient(360px 260px at 0% 0%, rgba(96, 175, 255, 0.18), transparent 72%),
+    radial-gradient(320px 280px at 100% 100%, rgba(20, 184, 166, 0.16), transparent 70%),
+    var(--u-grad-sidebar) !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.14) !important;
+  box-shadow: 14px 0 36px -18px rgba(8, 26, 64, 0.55) !important;
+}
+html body aside .h-16 {
+  background: rgba(15, 42, 90, 0.65) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+  backdrop-filter: blur(14px) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.13) !important;
+}
+html body aside nav button[class] {
+  border-radius: 14px !important;
+  padding: 10px 13px !important;
+  margin-bottom: 2px;
+  border: 1px solid transparent;
+  transition: transform 0.2s var(--u-ease), background 0.2s, border-color 0.2s, box-shadow 0.2s !important;
+}
+html body aside nav button:not([class*="from-med-600"]):hover {
+  background: rgba(255, 255, 255, 0.12) !important;
+  border-color: rgba(255, 255, 255, 0.14) !important;
+  transform: translateX(3px);
+}
+html body aside nav button[class*="from-med-600"] {
+  background: linear-gradient(105deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.11) 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.34) !important;
+  box-shadow: 0 12px 26px -12px rgba(4, 16, 42, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.35) !important;
+}
+html body aside nav button[class*="from-med-600"]::before {
+  width: 4px !important;
+  height: 24px !important;
+  background: linear-gradient(180deg, #FFE08A, #5EEAD4) !important;
+  box-shadow: 0 0 12px rgba(94, 234, 212, 0.85) !important;
+}
+/* Thẻ Format Đề Thi Quốc Gia trong Sidebar */
+html body aside .fmt-card {
+  padding: 14px !important;
+  border-radius: 18px !important;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.06)) !important;
+  border: 1px solid rgba(255, 255, 255, 0.24) !important;
+  box-shadow: 0 14px 28px -16px rgba(4, 16, 42, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
+}
+html body aside .fmt-tile {
+  border-radius: 13px !important;
+  background: rgba(7, 25, 58, 0.38) !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  padding: 10px 11px !important;
+  transition: transform 0.2s var(--u-ease), border-color 0.2s, background 0.2s !important;
+}
+html body aside .fmt-tile:hover {
+  transform: translateY(-2px);
+  background: rgba(7, 25, 58, 0.52) !important;
+  border-color: rgba(255, 255, 255, 0.28) !important;
+}
+html body aside .fmt-seal {
+  background: linear-gradient(135deg, #FFE58F, #F59E0B) !important;
+  color: #3B2300 !important;
+  box-shadow: 0 6px 14px -4px rgba(245, 158, 11, 0.65) !important;
+}
+html body aside.w-64 > div:last-child {
+  background: rgba(11, 33, 72, 0.82) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+  backdrop-filter: blur(14px) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
+
+/* ---------- 4. THANH HEADER TRÊN CÙNG (GLASS HEADER) ---------- */
+html:not(.mp-dark) body header.glass-header {
+  background: rgba(255, 255, 255, 0.88) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(1.4) !important;
+  backdrop-filter: blur(16px) saturate(1.4) !important;
+  border-bottom: 1px solid var(--u-border-light) !important;
+  box-shadow: 0 4px 20px -10px rgba(18, 52, 108, 0.10) !important;
+  padding-top: 11px !important;
+  padding-bottom: 11px !important;
+}
+html.mp-dark body header.glass-header {
+  background: rgba(13, 26, 48, 0.88) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(1.4) !important;
+  backdrop-filter: blur(16px) saturate(1.4) !important;
+  border-bottom: 1px solid var(--u-border-light) !important;
+  box-shadow: 0 6px 24px -10px rgba(0, 0, 0, 0.6) !important;
+}
+html:not(.mp-dark) body header.glass-header button.bg-white {
+  background: #FFFFFF !important;
+  border: 1px solid #D5E2F2 !important;
+  color: #1E3354 !important;
+  border-radius: 12px !important;
+  padding: 7px 12px !important;
+  font-weight: 700 !important;
+  box-shadow: 0 1px 2px rgba(15, 35, 70, 0.04), inset 0 -1px 0 rgba(15, 35, 70, 0.03) !important;
+  transition: all 0.18s var(--u-ease) !important;
+}
+html:not(.mp-dark) body header.glass-header button.bg-white:hover {
+  border-color: #93B8E8 !important;
+  background: #F7FAFF !important;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px -6px rgba(29, 91, 214, 0.18) !important;
+}
+html.mp-dark body header.glass-header button.bg-white {
+  background: #162946 !important;
+  border: 1px solid #2A436B !important;
+  color: #E2EEFF !important;
+  border-radius: 12px !important;
+}
+html.mp-dark body header.glass-header button.bg-white:hover {
+  background: #1D3559 !important;
+  border-color: #4874B5 !important;
+  transform: translateY(-1px);
+}
+html body header.glass-header button.bg-slate-900 {
+  background: var(--u-grad-royal) !important;
+  border-radius: 12px !important;
+  padding: 7.5px 14px !important;
+  box-shadow: 0 8px 18px -8px rgba(22, 68, 168, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
+}
+html body header.glass-header button.bg-slate-900:hover {
+  filter: brightness(1.07);
+  transform: translateY(-1px);
+}
+
+/* ---------- 5. TỔNG QUAN (DASHBOARD: HERO, 4 KPI, 5 KHỐI NĂNG LỰC, RADAR, MỤC TIÊU) ---------- */
+html body #v10-dhero {
+  border-radius: 26px !important;
+  padding: 28px 32px !important;
+  background:
+    radial-gradient(480px 260px at 92% 12%, rgba(52, 214, 166, 0.30), transparent 68%),
+    radial-gradient(420px 260px at 18% 110%, rgba(120, 185, 255, 0.26), transparent 65%),
+    linear-gradient(120deg, #133A7C 0%, #1C58B0 50%, #0E7C86 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  box-shadow: 0 24px 52px -22px rgba(16, 52, 112, 0.58), inset 0 1px 0 rgba(255, 255, 255, 0.28) !important;
+}
+html body #v10-dhero .dh-hi {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 11px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.13);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  color: #FFE58F !important;
+  font-size: 11.5px !important;
+  font-weight: 700 !important;
+  margin-bottom: 6px;
+}
+html body #v10-dhero .dh-act button.pri {
+  background: linear-gradient(135deg, #FFE484 0%, #FFC53D 55%, #F59E0B 100%) !important;
+  color: #362200 !important;
+  font-weight: 800 !important;
+  box-shadow: 0 12px 26px -10px rgba(245, 158, 11, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.75) !important;
+}
+html body #v10-dhero .dh-act button.pri:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.04);
+}
+html body #v10-dhero .dh-ring {
+  border-radius: 22px !important;
+  padding: 16px 20px !important;
+  background: rgba(9, 28, 62, 0.34) !important;
+  border: 1px solid rgba(255, 255, 255, 0.22) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16), 0 14px 28px -16px rgba(0, 0, 0, 0.45) !important;
+}
+
+/* 4 Thẻ KPI ở Dashboard */
+html:not(.mp-dark) body #sec-dashboard > .grid > div:nth-child(1),
+html:not(.mp-dark) body #sec-dashboard > .grid > div:nth-child(2),
+html:not(.mp-dark) body #sec-dashboard > .grid > div:nth-child(3) {
+  border-radius: 20px !important;
+  padding: 20px 22px !important;
+  border: 1px solid #DCE7F6 !important;
+  box-shadow: var(--u-shadow-card) !important;
+  transition: transform 0.22s var(--u-ease), box-shadow 0.22s var(--u-ease), border-color 0.22s !important;
+}
+html:not(.mp-dark) body #sec-dashboard > .grid > div:nth-child(1):hover,
+html:not(.mp-dark) body #sec-dashboard > .grid > div:nth-child(2):hover,
+html:not(.mp-dark) body #sec-dashboard > .grid > div:nth-child(3):hover {
+  transform: translateY(-3px);
+  box-shadow: var(--u-shadow-card-hover) !important;
+  border-color: #B6CEEE !important;
+}
+html body #sec-dashboard > .grid > div:nth-child(4) {
+  border-radius: 20px !important;
+  padding: 20px 22px !important;
+  background: var(--u-grad-royal) !important;
+  border: 1px solid rgba(255, 255, 255, 0.24) !important;
+  box-shadow: 0 18px 38px -16px rgba(22, 68, 168, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.28) !important;
+}
+html body #sec-dashboard .kpi-num {
+  font-family: 'IBM Plex Mono', ui-monospace, monospace !important;
+  font-size: 26px !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.02em !important;
+  line-height: 1.15 !important;
+  color: var(--u-ink-1);
+}
+
+/* Các thẻ lớn trong Main */
+html:not(.mp-dark) body main .bg-white.rounded-2xl,
+html:not(.mp-dark) body main .bg-white.rounded-3xl {
+  background-color: #FFFFFF !important;
+  border: 1px solid var(--u-border-light) !important;
+  box-shadow: var(--u-shadow-card) !important;
+}
+html.mp-dark body main .bg-white.rounded-2xl,
+html.mp-dark body main .bg-white.rounded-3xl {
+  background-color: var(--u-surface-light) !important;
+  border: 1px solid var(--u-border-light) !important;
+  box-shadow: var(--u-shadow-card) !important;
+}
+
+/* 5 Dòng Khối Năng Lực Chuyên Khoa ở Dashboard */
+html:not(.mp-dark) body #sec-dashboard [onclick^="jumpToCase"]:not(#mp-insight *) {
+  border-radius: 16px !important;
+  padding: 14px 16px !important;
+  background: linear-gradient(180deg, #FFFFFF 0%, #F9FBFF 100%) !important;
+  border: 1px solid #DCE7F5 !important;
+  box-shadow: 0 2px 6px rgba(15, 35, 70, 0.03) !important;
+  transition: transform 0.2s var(--u-ease), box-shadow 0.2s var(--u-ease), border-color 0.2s, background 0.2s !important;
+}
+html:not(.mp-dark) body #sec-dashboard [onclick^="jumpToCase"]:not(#mp-insight *):hover {
+  transform: translateY(-2px) translateX(2px);
+  background: #FFFFFF !important;
+  border-color: #93B8E8 !important;
+  box-shadow: 0 10px 24px -10px rgba(29, 91, 214, 0.18) !important;
+}
+html.mp-dark body #sec-dashboard [onclick^="jumpToCase"]:not(#mp-insight *) {
+  border-radius: 16px !important;
+  padding: 14px 16px !important;
+  background: linear-gradient(180deg, #142642 0%, #112038 100%) !important;
+  border: 1px solid #253D63 !important;
+  transition: transform 0.2s var(--u-ease), box-shadow 0.2s, border-color 0.2s !important;
+}
+html.mp-dark body #sec-dashboard [onclick^="jumpToCase"]:not(#mp-insight *):hover {
+  transform: translateY(-2px) translateX(2px);
+  border-color: #4A78B8 !important;
+  box-shadow: 0 12px 26px -12px rgba(0, 0, 0, 0.7) !important;
+}
+html body #sec-dashboard [onclick^="jumpToCase"] .h-2 {
+  height: 7px !important;
+  border-radius: 999px !important;
+  overflow: hidden;
+}
+html body #sec-dashboard [onclick^="jumpToCase"] .h-2 > div {
+  transition: width 0.6s var(--u-ease) !important;
+}
+
+/* ---------- 6. PHÒNG THI MÔ PHỎNG — DANH SÁCH ĐỀ THI (#exam-room-list-view) ---------- */
+html body #exam-room-list-view > div:first-child {
+  border-radius: 26px !important;
+  background:
+    radial-gradient(480px 240px at 90% 10%, rgba(52, 214, 166, 0.28), transparent 68%),
+    radial-gradient(400px 240px at 10% 100%, rgba(120, 185, 255, 0.24), transparent 65%),
+    var(--u-grad-royal) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  box-shadow: 0 24px 50px -22px rgba(18, 56, 124, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
+}
+html:not(.mp-dark) body #exam-list-grid > div {
+  border-radius: 22px !important;
+  padding: 22px !important;
+  background: linear-gradient(180deg, #FFFFFF 0%, #FAFDFE 100%) !important;
+  border: 1px solid #D8E4F4 !important;
+  box-shadow: var(--u-shadow-card) !important;
+  transition: transform 0.22s var(--u-ease), box-shadow 0.22s var(--u-ease), border-color 0.22s !important;
+}
+html:not(.mp-dark) body #exam-list-grid > div:hover {
+  transform: translateY(-4px);
+  border-color: #8EB6EC !important;
+  box-shadow: var(--u-shadow-card-hover) !important;
+}
+html.mp-dark body #exam-list-grid > div {
+  border-radius: 22px !important;
+  padding: 22px !important;
+  background: linear-gradient(180deg, #142642 0%, #101F36 100%) !important;
+  border: 1px solid #263E63 !important;
+  box-shadow: var(--u-shadow-card) !important;
+  transition: transform 0.22s var(--u-ease), box-shadow 0.22s var(--u-ease), border-color 0.22s !important;
+}
+html.mp-dark body #exam-list-grid > div:hover {
+  transform: translateY(-4px);
+  border-color: #4975B8 !important;
+  box-shadow: var(--u-shadow-card-hover) !important;
+}
+html body #exam-list-grid [data-exam-open] {
+  border-radius: 13px !important;
+  padding: 9px 18px !important;
+  background: var(--u-grad-royal) !important;
+  box-shadow: 0 8px 20px -8px rgba(22, 68, 168, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.28) !important;
+  transition: transform 0.18s var(--u-ease), filter 0.18s, box-shadow 0.18s !important;
+}
+html body #exam-list-grid [data-exam-open]:hover {
+  transform: translateY(-1.5px);
+  filter: brightness(1.08);
+  box-shadow: 0 12px 24px -8px rgba(22, 68, 168, 0.8) !important;
+}
+
+/* ---------- 7. PHÒNG THI CHÍNH THỨC (#exam-top-bar, #exam-split, BỆNH ÁN, ĐÁP ÁN, BIỆN LUẬN) ---------- */
+html body #sec-exam-room #exam-top-bar[data-xt="1"] {
+  background:
+    radial-gradient(450px 150px at 8% -15%, rgba(255, 255, 255, 0.24), transparent 70%),
+    radial-gradient(380px 160px at 88% 120%, rgba(94, 234, 212, 0.24), transparent 70%),
+    linear-gradient(115deg, #143B8C 0%, #1D58C2 48%, #0F849C 100%) !important;
+  border-radius: 20px 20px 0 0 !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.32), 0 12px 28px -16px rgba(15, 45, 105, 0.6) !important;
+}
+html.mp-dark body #sec-exam-room #exam-top-bar[data-xt="1"] {
+  background:
+    radial-gradient(450px 150px at 8% -15%, rgba(255, 255, 255, 0.14), transparent 70%),
+    linear-gradient(115deg, #0F2B66 0%, #174397 48%, #0C677B 100%) !important;
+}
+html body #sec-exam-room #exam-top-bar[data-xt="1"] .xt-prog {
+  height: 3.5px !important;
+  background: rgba(255, 255, 255, 0.18) !important;
+}
+html body #sec-exam-room #exam-top-bar[data-xt="1"] .xt-prog > i {
+  background: linear-gradient(90deg, #FFE08A 0%, #5EEAD4 55%, #FFFFFF 100%) !important;
+  box-shadow: 0 0 10px rgba(255, 224, 138, 0.75) !important;
+}
+html body #sec-exam-room #exam-top-bar[data-xt="1"] .xt-tools {
+  background: rgba(6, 22, 58, 0.28) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.16) !important;
+}
+html body #sec-exam-room #exam-top-bar[data-xt="1"] .xt-btn:hover {
+  background: rgba(255, 255, 255, 0.16) !important;
+  color: #FFFFFF !important;
+}
+
+/* Khung chia đôi Phòng thi */
+html:not(.mp-dark) body #exam-split {
+  background: #FFFFFF !important;
+  border-color: #D5E2F2 !important;
+  border-radius: 0 0 22px 22px !important;
+  box-shadow: 0 18px 42px -18px rgba(15, 42, 90, 0.14) !important;
+}
+html.mp-dark body #exam-split {
+  background: #0F1E34 !important;
+  border-color: #23395B !important;
+  border-radius: 0 0 22px 22px !important;
+  box-shadow: 0 20px 48px -18px rgba(0, 0, 0, 0.75) !important;
+}
+
+/* Cột trái: Bệnh án điện tử (EMR) */
+html:not(.mp-dark) body #vignette-container {
+  background: linear-gradient(180deg, #FFFFFF 0%, #FAFDFE 100%) !important;
+  border-right: 1px solid #DCE7F5 !important;
+}
+html.mp-dark body #vignette-container {
+  background: linear-gradient(180deg, #101F36 0%, #0D1A2E 100%) !important;
+  border-right: 1px solid #223859 !important;
+}
+
+/* Hộp Sinh hiệu đầu đề bài (.mpv-card) */
+html:not(.mp-dark) body #clinical-story .mpv-card {
+  background: linear-gradient(135deg, #F2F7FF 0%, #EDF8FA 100%) !important;
+  border: 1px solid #C8DCF4 !important;
+  border-left: 4px solid #1D5BD6 !important;
+  border-radius: 16px !important;
+  padding: 13px 16px !important;
+  box-shadow: 0 4px 14px -6px rgba(29, 91, 214, 0.10) !important;
+}
+html.mp-dark body #clinical-story .mpv-card {
+  background: linear-gradient(135deg, rgba(29, 91, 214, 0.16) 0%, rgba(13, 148, 136, 0.12) 100%) !important;
+  border: 1px solid rgba(107, 177, 255, 0.26) !important;
+  border-left: 4px solid #60A5FA !important;
+  border-radius: 16px !important;
+}
+html:not(.mp-dark) body #clinical-story .mpv-chip {
+  background: #FFFFFF !important;
+  border: 1px solid #D3E2F4 !important;
+  border-radius: 10px !important;
+  padding: 4px 10px !important;
+  box-shadow: 0 1px 2px rgba(15, 35, 70, 0.04) !important;
+}
+html:not(.mp-dark) body #clinical-story .mpv-chip.is-danger {
+  background: #FFF1F2 !important;
+  border-color: #FECDD3 !important;
+}
+html:not(.mp-dark) body #clinical-story .mpv-chip.is-danger b {
+  color: #BE123C !important;
+}
+
+/* Các phân mục bệnh án .xq-sec (Excel đề thi) */
+html:not(.mp-dark) body #clinical-story .xq-sec {
+  background: linear-gradient(180deg, rgb(var(--c) / 0.045) 0%, rgb(var(--c) / 0.02) 100%) !important;
+  border: 1px solid rgb(var(--c) / 0.22) !important;
+  border-radius: 16px !important;
+  padding: 14px 16px 14px 20px !important;
+  box-shadow: 0 2px 8px -2px rgba(15, 35, 70, 0.04) !important;
+}
+
+/* Câu hỏi chính (#question-stem) */
+html:not(.mp-dark) body #question-stem {
+  background: linear-gradient(135deg, #EFF6FF 0%, #ECFDF5 100%) !important;
+  border: 1px solid #BFDBFE !important;
+  border-left: 5px solid #1D5BD6 !important;
+  border-radius: 16px !important;
+  padding: 16px 18px !important;
+  color: #0B1E3D !important;
+  box-shadow: 0 8px 20px -12px rgba(29, 91, 214, 0.18) !important;
+}
+html.mp-dark body #question-stem {
+  background: linear-gradient(135deg, rgba(29, 91, 214, 0.20) 0%, rgba(13, 148, 136, 0.15) 100%) !important;
+  border: 1px solid rgba(96, 165, 250, 0.32) !important;
+  border-left: 5px solid #60A5FA !important;
+  border-radius: 16px !important;
+  padding: 16px 18px !important;
+  color: #F2F7FF !important;
+}
+
+/* Cột phải: Các phương án trả lời (#options-container) */
+html:not(.mp-dark) body #exam-split > #vignette-container + div {
+  background: linear-gradient(180deg, #F7FAFF 0%, #F1F6FD 100%) !important;
+}
+html.mp-dark body #exam-split > #vignette-container + div {
+  background: linear-gradient(180deg, #0D1A2D 0%, #0A1526 100%) !important;
+}
+
+html:not(.mp-dark) body #options-container > div {
+  border-radius: 16px !important;
+  padding: 14px 16px !important;
+  border: 1.5px solid #D8E4F4 !important;
+  background: #FFFFFF !important;
+  box-shadow: 0 2px 6px rgba(15, 35, 70, 0.04) !important;
+  transition: transform 0.18s var(--u-ease), box-shadow 0.18s var(--u-ease), border-color 0.18s, background-color 0.18s !important;
+}
+html:not(.mp-dark) body #options-container > div:hover {
+  transform: translateY(-1.5px);
+  border-color: #7AA7E8 !important;
+  box-shadow: 0 8px 20px -8px rgba(29, 91, 214, 0.16) !important;
+}
+/* Phương án đang được chọn */
+html:not(.mp-dark) body #options-container > div[class*="border-med-600"] {
+  border: 2px solid #1D5BD6 !important;
+  background: linear-gradient(135deg, #EFF6FF 0%, #F0FDFA 100%) !important;
+  box-shadow: 0 0 0 3px rgba(29, 91, 214, 0.14), 0 10px 22px -10px rgba(29, 91, 214, 0.25) !important;
+}
+/* Phương án Đúng sau khi chốt */
+html:not(.mp-dark) body #options-container > div[class*="border-emerald-500"] {
+  border: 2px solid #10B981 !important;
+  background: #F0FDF4 !important;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15), 0 10px 22px -10px rgba(16, 185, 129, 0.22) !important;
+}
+/* Phương án Sai sau khi chốt */
+html:not(.mp-dark) body #options-container > div[class*="border-rose-500"] {
+  border: 2px solid #F43F5E !important;
+  background: #FFF1F2 !important;
+  box-shadow: 0 0 0 3px rgba(244, 63, 94, 0.14), 0 10px 22px -10px rgba(244, 63, 94, 0.2) !important;
+}
+
+/* Chế độ tối cho đáp án */
+html.mp-dark body #options-container > div {
+  border-radius: 16px !important;
+  padding: 14px 16px !important;
+  border: 1.5px solid #243B5E !important;
+  background: #13243E !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+}
+html.mp-dark body #options-container > div:hover {
+  transform: translateY(-1.5px);
+  border-color: #4D7CC4 !important;
+  background: #172B4A !important;
+}
+html.mp-dark body #options-container > div[class*="border-med-600"] {
+  border: 2px solid #60A5FA !important;
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.24) 0%, rgba(13, 148, 136, 0.18) 100%) !important;
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2) !important;
+}
+html.mp-dark body #options-container > div[class*="border-emerald-500"] {
+  border: 2px solid #34D399 !important;
+  background: rgba(6, 95, 70, 0.28) !important;
+}
+html.mp-dark body #options-container > div[class*="border-rose-500"] {
+  border: 2px solid #FB7185 !important;
+  background: rgba(159, 18, 57, 0.28) !important;
+}
+html.mp-dark body #options-container [id^="opt-bar-"] {
+  opacity: 0.22 !important;
+}
+
+/* Ô chữ cái A B C D E */
+html body #options-container [id^="opt-badge-"] {
+  width: 28px !important;
+  height: 28px !important;
+  border-radius: 9px !important;
+  font-size: 12.5px !important;
+  font-weight: 800 !important;
+  transition: all 0.18s var(--u-ease) !important;
+}
+
+/* Nút Chốt Đáp Án & Câu Tiếp Theo */
+html body #btn-submit-ans {
+  border-radius: 14px !important;
+  padding: 13px 20px !important;
+  background: var(--u-grad-royal) !important;
+  box-shadow: 0 12px 26px -10px rgba(22, 68, 168, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.28) !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.01em !important;
+}
+html body #btn-submit-ans:hover {
+  transform: translateY(-1.5px);
+  filter: brightness(1.07);
+}
+
+/* Hộp Giải Thích & Biện Luận (#explanation-box) */
+html body #explanation-box > div:first-child {
+  border-radius: 20px !important;
+  overflow: hidden !important;
+  box-shadow: 0 14px 32px -14px rgba(15, 42, 90, 0.16) !important;
+}
+html body #exp-header.bg-emerald-600 {
+  background: linear-gradient(135deg, #059669 0%, #0D9488 100%) !important;
+  padding: 14px 20px !important;
+}
+html body #exp-header.bg-rose-600 {
+  background: linear-gradient(135deg, #E11D48 0%, #BE123C 100%) !important;
+  padding: 14px 20px !important;
+}
+
+/* ---------- 8. TAB AI TẠO ĐỀ & QUẢN LÝ ĐỀ THI (#sec-ai-generator) ---------- */
+html body #sec-ai-generator > .bg-white {
+  border-radius: 28px !important;
+  box-shadow: 0 20px 50px -20px rgba(15, 42, 90, 0.15) !important;
+}
+html body #sec-ai-generator > .bg-white > div:first-child {
+  background:
+    radial-gradient(500px 240px at 90% 0%, rgba(52, 214, 166, 0.26), transparent 70%),
+    var(--u-grad-royal) !important;
+  padding: 28px 32px !important;
+}
+html:not(.mp-dark) body #sec-ai-generator details {
+  border-radius: 18px !important;
+  border: 1px solid #D8E4F4 !important;
+  background: #F8FBFF !important;
+  box-shadow: 0 2px 8px rgba(15, 35, 70, 0.03) !important;
+  transition: border-color 0.2s, box-shadow 0.2s !important;
+}
+html:not(.mp-dark) body #sec-ai-generator details[open] {
+  border-color: #B2CBEB !important;
+  box-shadow: 0 10px 24px -14px rgba(22, 68, 168, 0.14) !important;
+}
+html body #btn-generate {
+  border-radius: 18px !important;
+  padding: 16px 24px !important;
+  background: var(--u-grad-royal) !important;
+  box-shadow: 0 16px 34px -12px rgba(22, 68, 168, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+  font-size: 14.5px !important;
+  letter-spacing: 0.01em !important;
+  transition: transform 0.2s var(--u-ease), box-shadow 0.2s, filter 0.2s !important;
+}
+html body #btn-generate:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.07);
+  box-shadow: 0 20px 40px -12px rgba(22, 68, 168, 0.8) !important;
+}
+html:not(.mp-dark) body #ai-admin-exams-list > div {
+  border-radius: 18px !important;
+  padding: 16px 18px !important;
+  background: #FFFFFF !important;
+  border: 1px solid #DCE7F5 !important;
+  box-shadow: 0 4px 14px -8px rgba(15, 35, 70, 0.08) !important;
+  transition: transform 0.18s var(--u-ease), border-color 0.18s, box-shadow 0.18s !important;
+}
+html:not(.mp-dark) body #ai-admin-exams-list > div:hover {
+  transform: translateY(-2px);
+  border-color: #93B8E8 !important;
+  box-shadow: 0 12px 24px -10px rgba(22, 68, 168, 0.16) !important;
+}
+
+/* ---------- 9. TRANG CÁ NHÂN BÁC SĨ (#sec-profile & #v10-hist) ---------- */
+html body #sec-profile #pf-main > div.rounded-3xl {
+  background:
+    radial-gradient(460px 240px at 90% 10%, rgba(52, 214, 166, 0.28), transparent 68%),
+    var(--u-grad-royal) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  box-shadow: 0 22px 48px -20px rgba(16, 52, 112, 0.58), inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
+  padding: 26px 30px !important;
+}
+html body #pf-avatar {
+  box-shadow: 0 10px 24px -8px rgba(0, 0, 0, 0.45) !important;
+}
+html body #v10-hist {
+  border-radius: 22px !important;
+  padding: 24px !important;
+  box-shadow: var(--u-shadow-card) !important;
+}
+html:not(.mp-dark) body #v10-hist .hrow {
+  background: #F8FBFF !important;
+  border-color: #DCE7F5 !important;
+  border-radius: 14px !important;
+  padding: 12px 16px !important;
+  transition: transform 0.18s var(--u-ease), border-color 0.18s, background 0.18s !important;
+}
+html:not(.mp-dark) body #v10-hist .hrow:hover {
+  transform: translateX(3px);
+  background: #FFFFFF !important;
+  border-color: #93B8E8 !important;
+}
+
+/* ---------- 10. CÁC NGĂN KÉO & HỘP THOẠI (MATRIX, SỔ TAY, KẾT QUẢ, CTRL+K, PHÍM TẮT) ---------- */
+/* Bản đồ 140 câu (#matrix-drawer) & Sổ tay ôn tập (#mp-nb) */
+html body #matrix-drawer,
+html body #mp-nb {
+  border-radius: 24px 0 0 24px !important;
+  box-shadow: -24px 0 60px -20px rgba(10, 32, 76, 0.42) !important;
+  overflow: hidden;
+}
+html body #matrix-drawer > div:first-child,
+html body #mp-nb > div:first-child {
+  padding: 16px 20px !important;
+  background:
+    radial-gradient(280px 120px at 0% 0%, rgba(255, 255, 255, 0.22), transparent 70%),
+    var(--u-grad-royal) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16) !important;
+}
+html body #matrix-grid-container button {
+  border-radius: 10px !important;
+  height: 36px !important;
+  font-size: 12px !important;
+  transition: transform 0.15s var(--u-ease), box-shadow 0.15s, border-color 0.15s !important;
+}
+html body #matrix-grid-container button:hover {
+  transform: translateY(-2px) scale(1.05);
+  z-index: 2;
+  box-shadow: 0 6px 14px -4px rgba(22, 68, 168, 0.3) !important;
+}
+
+/* Hộp kết quả bài thi (#mp-result) */
+html body #mp-result {
+  -webkit-backdrop-filter: blur(10px) !important;
+  backdrop-filter: blur(10px) !important;
+}
+html body #mp-result > div {
+  border-radius: 28px !important;
+  box-shadow: 0 36px 80px -20px rgba(8, 24, 58, 0.65) !important;
+  overflow: hidden !important;
+}
+html body #mp-result > div > div:first-child {
+  background:
+    radial-gradient(420px 180px at 90% 0%, rgba(52, 214, 166, 0.32), transparent 70%),
+    var(--u-grad-royal) !important;
+  padding: 26px 28px !important;
+}
+
+/* Hộp Tìm nhanh Ctrl+K (#mp-pal) & Xác nhận (#mp-confirm-dialog) & Tài khoản (#mc-modal) */
+html body #mp-pal,
+html body #mp-confirm-dialog,
+html body #mc-modal {
+  -webkit-backdrop-filter: blur(8px) !important;
+  backdrop-filter: blur(8px) !important;
+}
+html body #mp-pal > div {
+  border-radius: 22px !important;
+  box-shadow: 0 30px 70px -18px rgba(8, 24, 58, 0.55) !important;
+}
+html.mp-dark body #mp-pal > div,
+html.mp-dark body #mp-confirm-dialog > div {
+  background: #101F36 !important;
+  border-color: #263E63 !important;
+  color: #F2F7FF !important;
+}
+html.mp-dark body #mp-pal input {
+  background: transparent !important;
+  color: #F2F7FF !important;
+}
+html.mp-dark body #mp-pal #mp-pal-list button {
+  color: #C8D7EC !important;
+}
+html.mp-dark body #mp-pal #mp-pal-list button.bg-med-50 {
+  background: rgba(59, 130, 246, 0.22) !important;
+  color: #93C5FD !important;
+}
+html.mp-dark body #mp-nb {
+  background: #101F36 !important;
+  border-color: #263E63 !important;
+  color: #F2F7FF !important;
+}
+html.mp-dark body #mp-nb > div:nth-child(2) {
+  background: #0C1729 !important;
+  border-color: #223859 !important;
+}
+html.mp-dark body #mp-nb button {
+  border-color: #263E63 !important;
+}
+</style>
+
+
+<!-- =====================================================================
+     SECRET ULTRA-LUXURY CLINICAL SUITE v26 — GIAO DIỆN ĐỈNH CAO TOÀN DIỆN
+     ===================================================================== -->
+<style id="secret-ultra-luxury-v26">
+:root {
+  --lux-ring-blue: 0 0 0 1px rgba(29, 91, 214, 0.14), 0 12px 32px -10px rgba(18, 55, 130, 0.12), 0 2px 6px rgba(15, 35, 70, 0.04);
+  --lux-ring-hover: 0 0 0 1.5px rgba(29, 91, 214, 0.38), 0 20px 44px -12px rgba(22, 68, 168, 0.22), 0 4px 12px rgba(15, 35, 70, 0.06);
+  --lux-grad-hero: linear-gradient(125deg, #0B2559 0%, #16469E 45%, #0D7490 85%, #0D9488 100%);
+  --lux-grad-gold: linear-gradient(135deg, #FFF3B0 0%, #FFD452 48%, #F59E0B 100%);
+  --lux-grad-btn: linear-gradient(135deg, #1E40AF 0%, #1D5BD6 48%, #0D9488 100%);
+  --lux-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ---------- 1. HIỆU ỨNG CHUYỂN TAB & CUỘN MƯỢT MÀ ---------- */
+@keyframes luxSectionIn {
+  from { opacity: 0; transform: translateY(10px) scale(0.996); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+html body main section:not(.hidden) {
+  animation: luxSectionIn 0.34s var(--lux-ease) both;
+}
+
+/* ---------- 2. THANH BÊN (SIDEBAR) & LOGO THƯƠNG HIỆU ĐẲNG CẤP ---------- */
+html body aside.w-64.bg-slate-950:not(#mc-gate) {
+  background:
+    radial-gradient(380px 280px at 12% 0%, rgba(96, 165, 250, 0.24), transparent 72%),
+    radial-gradient(340px 320px at 90% 95%, rgba(45, 212, 191, 0.18), transparent 70%),
+    linear-gradient(185deg, #0A1E46 0%, #10316B 52%, #0C4A6E 100%) !important;
+  box-shadow: 16px 0 40px -18px rgba(6, 20, 52, 0.65), inset -1px 0 0 rgba(255, 255, 255, 0.14) !important;
+}
+html body aside .h-16 .w-9 {
+  background: linear-gradient(145deg, #60A5FA 0%, #2563EB 52%, #0D9488 100%) !important;
+  box-shadow: 0 8px 20px -6px rgba(37, 99, 235, 0.75), inset 0 1.5px 0 rgba(255, 255, 255, 0.5) !important;
+}
+html body aside nav button[class*="from-med-600"] {
+  background: linear-gradient(105deg, rgba(255, 255, 255, 0.26) 0%, rgba(255, 255, 255, 0.10) 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.38) !important;
+  box-shadow: 0 14px 28px -12px rgba(4, 15, 38, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.42) !important;
+}
+html body aside #sidebar-q-badge {
+  background: linear-gradient(135deg, rgba(94, 234, 212, 0.26), rgba(56, 189, 248, 0.22)) !important;
+  color: #A7F3D0 !important;
+  border: 1px solid rgba(94, 234, 212, 0.45) !important;
+  font-weight: 800 !important;
+  padding: 2px 8px !important;
+  border-radius: 999px !important;
+  box-shadow: 0 2px 8px rgba(20, 184, 166, 0.25) !important;
+}
+
+/* ---------- 3. HEADER KÍNH MỜ & CỤM NÚT CÔNG CỤ ---------- */
+html:not(.mp-dark) body header.glass-header {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.94) 0%, rgba(248, 251, 255, 0.88) 100%) !important;
+  border-bottom: 1px solid rgba(203, 218, 241, 0.85) !important;
+  box-shadow: 0 6px 24px -12px rgba(18, 52, 108, 0.12), inset 0 1px 0 #FFFFFF !important;
+}
+html body header.glass-header kbd {
+  background: rgba(29, 91, 214, 0.07) !important;
+  border: 1px solid rgba(29, 91, 214, 0.2) !important;
+  color: #1D5BD6 !important;
+  font-weight: 700 !important;
+  border-radius: 6px !important;
+  padding: 1px 6px !important;
+}
+html.mp-dark body header.glass-header kbd {
+  background: rgba(96, 165, 250, 0.14) !important;
+  border-color: rgba(96, 165, 250, 0.3) !important;
+  color: #93C5FD !important;
+}
+
+/* ---------- 4. TỔNG QUAN (DASHBOARD): BANNER HERO, KPI, MA TRẬN 5 KHỐI, BLOOM, RADAR, MỤC TIÊU ---------- */
+html body #v10-dhero {
+  background:
+    radial-gradient(550px 280px at 94% 6%, rgba(45, 212, 191, 0.34), transparent 68%),
+    radial-gradient(450px 280px at 14% 110%, rgba(96, 165, 250, 0.30), transparent 65%),
+    var(--lux-grad-hero) !important;
+  border: 1px solid rgba(255, 255, 255, 0.22) !important;
+  box-shadow: 0 28px 60px -22px rgba(11, 37, 89, 0.62), inset 0 1.5px 0 rgba(255, 255, 255, 0.32) !important;
+}
+html body #v10-dhero h2 {
+  text-shadow: 0 2px 14px rgba(6, 20, 52, 0.35);
+}
+html body #v10-dhero .dh-act button:not(.pri) {
+  background: rgba(255, 255, 255, 0.13) !important;
+  border: 1px solid rgba(255, 255, 255, 0.26) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  backdrop-filter: blur(8px) !important;
+}
+html body #v10-dhero .dh-act button:not(.pri):hover {
+  background: rgba(255, 255, 255, 0.22) !important;
+  border-color: rgba(255, 255, 255, 0.42) !important;
+}
+
+/* 4 Thẻ KPI với dải sáng đỉnh & chiều sâu */
+html:not(.mp-dark) body #sec-dashboard > .grid > div:nth-child(1) {
+  background: radial-gradient(240px 140px at 100% 0%, rgba(16, 185, 129, 0.10), transparent 70%), #FFFFFF !important;
+}
+html:not(.mp-dark) body #sec-dashboard > .grid > div:nth-child(2) {
+  background: radial-gradient(240px 140px at 100% 0%, rgba(245, 158, 11, 0.11), transparent 70%), #FFFFFF !important;
+}
+html:not(.mp-dark) body #sec-dashboard > .grid > div:nth-child(3) {
+  background: radial-gradient(240px 140px at 100% 0%, rgba(14, 165, 233, 0.11), transparent 70%), #FFFFFF !important;
+}
+html body #sec-dashboard > .grid > div:nth-child(1)::before {
+  height: 4px !important;
+  background: linear-gradient(90deg, #059669, #34D399) !important;
+}
+html body #sec-dashboard > .grid > div:nth-child(2)::before {
+  height: 4px !important;
+  background: linear-gradient(90deg, #D97706, #FBBF24) !important;
+}
+html body #sec-dashboard > .grid > div:nth-child(3)::before {
+  height: 4px !important;
+  background: linear-gradient(90deg, #0284C7, #38BDF8) !important;
+}
+html body #sec-dashboard > .grid > div:nth-child(4)::before {
+  height: 4px !important;
+  background: linear-gradient(90deg, #FFE08A, #5EEAD4) !important;
+}
+html body #sec-dashboard > .grid > div > div:last-child:has(> i) {
+  width: 50px !important;
+  height: 50px !important;
+  border-radius: 16px !important;
+  transition: transform 0.25s var(--lux-ease) !important;
+}
+html body #sec-dashboard > .grid > div:hover > div:last-child:has(> i) {
+  transform: scale(1.08) rotate(-4deg);
+}
+
+/* 5 Khối Năng Lực Chuyên Khoa ở Dashboard: viền sắc độ riêng cho từng chuyên khoa */
+html:not(.mp-dark) body #sec-dashboard [onclick^="jumpToCase"]:not(#mp-insight *) {
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px !important;
+  padding: 15px 18px 15px 20px !important;
+  background: linear-gradient(180deg, #FFFFFF 0%, #F9FBFF 100%) !important;
+  border: 1px solid #D8E4F4 !important;
+  box-shadow: 0 2px 8px rgba(15, 35, 70, 0.035), inset 0 1px 0 #FFFFFF !important;
+}
+html body #sec-dashboard [onclick^="jumpToCase"]:not(#mp-insight *)::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4.5px;
+  border-radius: 4px 0 0 4px;
+  background: var(--dom-c, #10B981);
+}
+html body #sec-dashboard [onclick="jumpToCase(0)"] { --dom-c: #10B981; }
+html body #sec-dashboard [onclick="jumpToCase(40)"] { --dom-c: #0284C7; }
+html body #sec-dashboard [onclick="jumpToCase(70)"] { --dom-c: #F59E0B; }
+html body #sec-dashboard [onclick="jumpToCase(95)"] { --dom-c: #E11D48; }
+html body #sec-dashboard [onclick="jumpToCase(120)"] { --dom-c: #7C3AED; }
+
+html body #sec-dashboard [onclick^="jumpToCase"]:not(#mp-insight *) span.w-6.h-6 {
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 10px !important;
+  font-size: 14px !important;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.06), 0 4px 10px -4px rgba(0, 0, 0, 0.12) !important;
+}
+
+/* Thẻ Chuẩn Nhận Thức Bloom (Cột phải Dashboard) */
+html:not(.mp-dark) body #sec-dashboard .space-y-2\.5 > div.bg-sky-50 {
+  background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%) !important;
+  border: 1px solid #BAE6FD !important;
+  border-left: 4px solid #0284C7 !important;
+  border-radius: 14px !important;
+  box-shadow: 0 4px 12px -6px rgba(2, 132, 199, 0.15) !important;
+}
+html:not(.mp-dark) body #sec-dashboard .space-y-2\.5 > div.bg-amber-50 {
+  background: linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%) !important;
+  border: 1px solid #FDE68A !important;
+  border-left: 4px solid #D97706 !important;
+  border-radius: 14px !important;
+  box-shadow: 0 4px 12px -6px rgba(217, 119, 6, 0.15) !important;
+}
+html:not(.mp-dark) body #sec-dashboard .space-y-2\.5 > div.bg-rose-50 {
+  background: linear-gradient(135deg, #FFF1F2 0%, #FFE4E6 100%) !important;
+  border: 1px solid #FECDD3 !important;
+  border-left: 4px solid #E11D48 !important;
+  border-radius: 14px !important;
+  box-shadow: 0 4px 12px -6px rgba(225, 29, 72, 0.15) !important;
+}
+html body #sec-dashboard button[onclick="switchTab('exam-room')"]:not(.mp-cta):not(.pri) {
+  background: var(--lux-grad-btn) !important;
+  border-radius: 14px !important;
+  padding: 13px 18px !important;
+  font-size: 13px !important;
+  font-weight: 800 !important;
+  box-shadow: 0 12px 26px -10px rgba(29, 91, 214, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+}
+html body #sec-dashboard button[onclick="switchTab('exam-room')"]:not(.mp-cta):not(.pri):hover {
+  transform: translateY(-2px);
+  filter: brightness(1.07);
+}
+
+/* Khối Biểu Đồ Radar & Mục Tiêu Hôm Nay (#mp-extra) */
+html:not(.mp-dark) body #mp-extra > div {
+  background: radial-gradient(320px 180px at 100% 0%, rgba(29, 91, 214, 0.05), transparent 70%), #FFFFFF !important;
+  border-radius: 22px !important;
+  box-shadow: var(--lux-ring-blue) !important;
+}
+html body #mp-radar svg polygon[stroke="#1D5C9E"] {
+  fill: rgba(29, 91, 214, 0.18) !important;
+  stroke: #1D5BD6 !important;
+  stroke-width: 2.5px !important;
+  filter: drop-shadow(0 4px 10px rgba(29, 91, 214, 0.25));
+}
+html body #mp-goal svg circle.mp-ring {
+  stroke: #0D9488 !important;
+  filter: drop-shadow(0 2px 6px rgba(13, 148, 136, 0.35));
+}
+
+/* ---------- 5. PHÒNG THI MÔ PHỎNG — DANH SÁCH ĐỀ THI & THẺ ĐỀ THI ---------- */
+html:not(.mp-dark) body #exam-room-list-view > .bg-white.p-4 {
+  border-radius: 20px !important;
+  padding: 14px 18px !important;
+  background: #FFFFFF !important;
+  border: 1px solid #D5E2F2 !important;
+  box-shadow: var(--lux-ring-blue) !important;
+}
+html:not(.mp-dark) body #exam-list-search {
+  border-radius: 13px !important;
+  background: #F6F9FE !important;
+  border: 1.5px solid #D5E2F2 !important;
+  padding-top: 11px !important;
+  padding-bottom: 11px !important;
+  font-size: 13px !important;
+}
+html:not(.mp-dark) body #exam-list-search:focus {
+  background: #FFFFFF !important;
+  border-color: #1D5BD6 !important;
+  box-shadow: 0 0 0 4px rgba(29, 91, 214, 0.14) !important;
+}
+html body #exam-list-grid > div {
+  position: relative;
+  overflow: hidden;
+}
+html body #exam-list-grid > div::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #1D5BD6 0%, #0D9488 60%, #34D399 100%);
+  opacity: 0.9;
+}
+html:not(.mp-dark) body #exam-list-grid > div .grid.grid-cols-3 {
+  background: linear-gradient(180deg, #F5F9FF 0%, #EFF5FC 100%) !important;
+  border: 1px solid #D8E5F5 !important;
+  border-radius: 14px !important;
+  padding: 10px 8px !important;
+}
+
+/* ---------- 6. PHÒNG THI CHÍNH THỨC: CHRONOMETER, BỆNH ÁN EMR, ĐÁP ÁN A-E, AI MENTOR ---------- */
+/* Thanh Ghi chú nháp (#scratchpad-drawer) */
+html:not(.mp-dark) body #scratchpad-drawer {
+  background: linear-gradient(90deg, #FFFBEB 0%, #FEF3C7 100%) !important;
+  border-color: #FDE68A !important;
+  padding: 10px 20px !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7) !important;
+}
+html.mp-dark body #scratchpad-drawer {
+  background: linear-gradient(90deg, rgba(120, 53, 15, 0.45) 0%, rgba(146, 64, 14, 0.35) 100%) !important;
+  border-color: rgba(251, 191, 36, 0.3) !important;
+}
+html.mp-dark body #scratchpad-input {
+  color: #FEF3C7 !important;
+  background: transparent !important;
+}
+
+/* Cột trái: Bệnh án điện tử (EMR) */
+html body #clinical-story p {
+  margin-bottom: 10px;
+}
+html body #clinical-story p:last-child {
+  margin-bottom: 0;
+}
+html:not(.mp-dark) body #clinical-story strong,
+html:not(.mp-dark) body #clinical-story b {
+  color: #0B2149;
+}
+
+/* Hộp gợi ý tư duy (#hint-box) */
+html:not(.mp-dark) body #hint-box {
+  background: linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%) !important;
+  border: 1px solid #FCD34D !important;
+  border-left: 4px solid #F59E0B !important;
+  border-radius: 15px !important;
+  padding: 13px 16px !important;
+  box-shadow: 0 8px 20px -10px rgba(245, 158, 11, 0.25) !important;
+}
+html.mp-dark body #hint-box {
+  background: rgba(245, 158, 11, 0.14) !important;
+  border: 1px solid rgba(251, 191, 36, 0.35) !important;
+  border-left: 4px solid #FBBF24 !important;
+  color: #FDE68A !important;
+}
+
+/* Hộp Chuỗi Tư Duy Đa Bước (#exp-pearl container) */
+html body #explanation-box .bg-slate-900.text-slate-100.rounded-xl {
+  background:
+    radial-gradient(280px 120px at 100% 0%, rgba(45, 212, 191, 0.22), transparent 70%),
+    linear-gradient(135deg, #0D254C 0%, #153E82 55%, #0E5E76 100%) !important;
+  border: 1px solid rgba(147, 197, 253, 0.25) !important;
+  border-radius: 16px !important;
+  padding: 15px 18px !important;
+  box-shadow: 0 10px 24px -12px rgba(13, 37, 76, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.18) !important;
+}
+html body #explanation-box .bg-slate-900.text-slate-100.rounded-xl .text-med-400 {
+  color: #FFE08A !important;
+}
+
+/* Khối AI Mentor Follow-up Q&A */
+html body #explanation-box > div.bg-slate-900.text-white.p-4 {
+  background:
+    radial-gradient(320px 140px at 0% 0%, rgba(56, 189, 248, 0.22), transparent 70%),
+    linear-gradient(135deg, #0F2952 0%, #163C79 52%, #0F546E 100%) !important;
+  border: 1px solid rgba(125, 211, 252, 0.24) !important;
+  border-radius: 20px !important;
+  padding: 18px 20px !important;
+  box-shadow: 0 14px 30px -14px rgba(11, 37, 89, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.18) !important;
+}
+html body #ai-followup-chips button {
+  background: rgba(255, 255, 255, 0.12) !important;
+  border: 1px solid rgba(255, 255, 255, 0.24) !important;
+  color: #F0F7FF !important;
+  border-radius: 12px !important;
+  padding: 8px 13px !important;
+  font-weight: 600 !important;
+  transition: transform 0.18s var(--lux-ease), background 0.18s, border-color 0.18s !important;
+}
+html body #ai-followup-chips button:hover {
+  background: rgba(255, 255, 255, 0.24) !important;
+  border-color: #FFE08A !important;
+  transform: translateY(-1.5px);
+}
+html body #ai-mentor-response {
+  background: rgba(7, 19, 42, 0.55) !important;
+  border: 1px solid rgba(147, 197, 253, 0.25) !important;
+  border-radius: 14px !important;
+  padding: 14px 16px !important;
+  color: #EAF2FF !important;
+}
+
+/* ---------- 7. TRÌNH TẠO ĐỀ AI & NẠP ĐỀ EXCEL (#sec-ai-generator) ---------- */
+html:not(.mp-dark) body #sec-ai-generator .p-5.rounded-2xl.bg-slate-50 {
+  background: linear-gradient(180deg, #F8FBFF 0%, #F2F7FE 100%) !important;
+  border: 1px solid #D6E3F4 !important;
+  border-radius: 20px !important;
+  box-shadow: inset 0 1px 0 #FFFFFF, 0 2px 8px rgba(15, 35, 70, 0.03) !important;
+}
+html.mp-dark body #sec-ai-generator .p-5.rounded-2xl.bg-slate-50 {
+  background: linear-gradient(180deg, #13243E 0%, #0F1D33 100%) !important;
+  border: 1px solid #243C61 !important;
+  border-radius: 20px !important;
+}
+html:not(.mp-dark) body #sec-ai-generator .bloom-btn {
+  border-radius: 14px !important;
+  padding: 13px 14px !important;
+  box-shadow: 0 2px 6px rgba(15, 35, 70, 0.04) !important;
+  transition: transform 0.18s var(--lux-ease), box-shadow 0.18s, border-color 0.18s !important;
+}
+html:not(.mp-dark) body #sec-ai-generator .bloom-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px -6px rgba(29, 91, 214, 0.16) !important;
+}
+html:not(.mp-dark) body #mpxi .mpxi-drop {
+  background: radial-gradient(300px 140px at 50% 0%, rgba(16, 185, 129, 0.08), transparent 70%), #F8FBFF !important;
+  border: 2px dashed #60A5FA !important;
+  border-radius: 18px !important;
+  padding: 30px 22px !important;
+  transition: all 0.2s var(--lux-ease) !important;
+}
+html:not(.mp-dark) body #mpxi .mpxi-drop:hover,
+html:not(.mp-dark) body #mpxi .mpxi-drop.is-over {
+  border-color: #0D9488 !important;
+  background: radial-gradient(340px 160px at 50% 0%, rgba(16, 185, 129, 0.15), transparent 70%), #F0FDF4 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px -12px rgba(13, 148, 136, 0.22) !important;
+}
+
+/* ---------- 8. TRANG CÁ NHÂN BÁC SĨ (#sec-profile) ---------- */
+html:not(.mp-dark) body #sec-profile #pf-main .grid.grid-cols-2.sm\:grid-cols-3 > div {
+  border-radius: 15px !important;
+  padding: 13px 15px !important;
+  box-shadow: 0 2px 6px rgba(15, 35, 70, 0.035), inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+  transition: transform 0.18s var(--lux-ease), box-shadow 0.18s !important;
+}
+html:not(.mp-dark) body #sec-profile #pf-main .grid.grid-cols-2.sm\:grid-cols-3 > div:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px -8px rgba(15, 35, 70, 0.12) !important;
+}
+html body #pf-save {
+  background: var(--lux-grad-btn) !important;
+  border-radius: 13px !important;
+  padding: 11px 16px !important;
+  box-shadow: 0 10px 22px -8px rgba(29, 91, 214, 0.6) !important;
+}
+
+/* ---------- 9. BẢNG PHÍM TẮT (#ux-keys) & TOAST (#toast) ---------- */
+html body #ux-keys .ux-card {
+  border-radius: 26px !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  box-shadow: 0 36px 80px -20px rgba(8, 24, 58, 0.65) !important;
+}
+html body #ux-keys header {
+  background: var(--lux-grad-hero) !important;
+  padding: 20px 24px !important;
+}
+html body #toast {
+  border-radius: 16px !important;
+  padding: 13px 18px 15px !important;
+  background: linear-gradient(135deg, #0D254C 0%, #163E82 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  border-left: 4px solid var(--c, #5EEAD4) !important;
+  box-shadow: 0 20px 44px -12px rgba(6, 20, 52, 0.65) !important;
+}
+</style>
+
 </body>
 </html>
